@@ -1,0 +1,41 @@
+{
+  "database": {
+    "type": "sqlite",
+    "sqlite": {
+      "path": "products.db"
+    },
+    "mysql": {
+      "host": "localhost",
+      "port": 3306,
+      "user": "root",
+      "password": "",
+      "database": "price_compare",
+      "charset": "utf8mb4"
+    }
+  },
+  "scraper": {
+    "use_proxy": true,
+    "use_cookie": true,
+    "request_delay": [1, 3],
+    "max_retries": 3,
+    "timeout": 10
+  },
+  "monitor": {
+    "check_interval": 3600,
+    "notify_enabled": true,
+    "notify_methods": ["console"],
+    "email": {
+      "smtp_server": "smtp.example.com",
+      "smtp_port": 587,
+      "username": "",
+      "password": "",
+      "recipients": []
+    }
+  },
+  "output": {
+    "html_report": true,
+    "price_chart": true,
+    "json_export": true,
+    "output_dir": "./output"
+  }
+}

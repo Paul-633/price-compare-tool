@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商商品价格采集与对比工具 - 演示</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .example-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .example-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .example-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .example-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .example-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .example-item span {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: white;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        .recommendations {
+            background: #fff3cd;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .recommendations h2 {
+            color: #856404;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .rec-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffc107;
+            transition: transform 0.3s;
+        }
+
+        .rec-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .rec-rank {
+            display: inline-block;
+            background: #ffc107;
+            color: #856404;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .rec-score {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #28a745;
+            margin: 15px 0;
+        }
+
+        .rec-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .rec-price {
+            color: #dc3545;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .rec-info {
+            color: #6c757d;
+            margin: 5px 0;
+        }
+
+        .chart-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        .products-table {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .products-table h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .price {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .platform {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .platform-jd {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .platform-taobao {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .platform-pdd {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .platform-mock {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ 电商商品价格采集与对比工具</h1>
+            <p>自动采集京东、淘宝、拼多多等主流电商平台商品数据，智能分析性价比</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="输入商品关键词，如：无线蓝牙耳机、智能手机、笔记本电脑..." />
+                <button class="search-btn" id="searchBtn" onclick="startSearch()">开始采集</button>
+            </div>
+
+            <div class="example-section">
+                <h3>💡 示例关键词（点击快速体验）</h3>
+                <div class="example-grid">
+                    <div class="example-item" onclick="quickSearch('无线蓝牙耳机')">
+                        <strong>无线蓝牙耳机</strong>
+                        <span>数码产品 · 8个平台</span>
+                    </div>
+                    <div class="example-item" onclick="quickSearch('智能手机')">
+                        <strong>智能手机</strong>
+                        <span>手机通讯 · 8个平台</span>
+                    </div>
+                    <div class="example-item" onclick="quickSearch('笔记本电脑')">
+                        <strong>笔记本电脑</strong>
+                        <span>电脑办公 · 8个平台</span>
+                    </div>
+                    <div class="example-item" onclick="quickSearch('机械键盘')">
+                        <strong>机械键盘</strong>
+                        <span>外设配件 · 8个平台</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>正在采集商品数据，请稍候...</p>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="stats" id="stats"></div>
+
+            <div class="recommendations" id="recommendations">
+                <h2>🏆 性价比推荐 TOP 3</h2>
+                <div class="rec-grid" id="recGrid"></div>
+            </div>
+
+            <div class="chart-section">
+                <h2>📈 价格趋势分析（近30天）</h2>
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="products-table">
+                <h2>📊 全部商品列表（按价格从低到高排序）</h2>
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>商品名称</th>
+                            <th>价格</th>
+                            <th>销量</th>
+                            <th>店铺</th>
+                            <th>评分</th>
+                            <th>平台</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>本演示由电商价格采集对比工具提供 | 数据仅供参考</p>
+        </div>
+    </div>
+
+    <script>
+        // 模拟商品数据生成器
+        const TEMPLATES = [
+            { name: "{} 无线蓝牙耳机 降噪入耳式", priceRange: [99, 599], category: "数码" },
+            { name: "{} 智能手机 5G全网通", priceRange: [999, 5999], category: "手机" },
+            { name: "{} 笔记本电脑 轻薄本", priceRange: [2999, 8999], category: "电脑" },
+            { name: "{} 机械键盘 游戏电竞", priceRange: [199, 799], category: "外设" },
+            { name: "{} 显示器 27寸4K", priceRange: [899, 2999], category: "显示器" },
+            { name: "{} 运动鞋 男女同款", priceRange: [199, 899], category: "运动" },
+            { name: "{} 保温杯 316不锈钢", priceRange: [59, 199], category: "家居" },
+            { name: "{} 充电宝 20000mAh", priceRange: [79, 299], category: "配件" },
+        ];
+
+        const SHOP_NAMES = [
+            "官方旗舰店", "品牌专卖店", "数码旗舰店", "官方直营店",
+            "品质优选店", "正品保证店", "工厂直销店", "品牌授权店"
+        ];
+
+        const PLATFORMS = ["京东", "淘宝", "拼多多"];
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function randomFloat(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function generateProducts(keyword) {
+            const products = [];
+            const numProducts = randomInt(20, 35);
+
+            for (let i = 0; i < numProducts; i++) {
+                const template = TEMPLATES[randomInt(0, TEMPLATES.length - 1)];
+                const name = template.name.replace("{}", keyword);
+                const price = parseFloat(randomFloat(template.priceRange[0], template.priceRange[1]).toFixed(2));
+                const sales = randomInt(100, 50000);
+                const shopName = SHOP_NAMES[randomInt(0, SHOP_NAMES.length - 1)];
+                const shopScore = parseFloat(randomFloat(4.0, 5.0).toFixed(1));
+                const platform = PLATFORMS[randomInt(0, PLATFORMS.length - 1)];
+                const url = `https://${platform.toLowerCase()}.example.com/product/${Date.now()}_${i}`;
+
+                products.push({
+                    name,
+                    price,
+                    sales,
+                    shopName,
+                    shopScore,
+                    platform,
+                    url,
+                    category: template.category
+                });
+            }
+
+            return products;
+        }
+
+        function calculateValueScore(product) {
+            const salesScore = Math.min(product.sales / 10000, 1.0);
+            const shopScore = product.shopScore / 5.0;
+            const priceScore = 1.0 / (1.0 + product.price / 1000);
+            return ((salesScore * 0.4 + shopScore * 0.3 + priceScore * 0.3) * 100).toFixed(2);
+        }
+
+        function getRecommendations(products, topN = 3) {
+            const scored = products.map(p => ({
+                product: p,
+                valueScore: calculateValueScore(p)
+            }));
+            scored.sort((a, b) => b.valueScore - a.valueScore);
+            return scored.slice(0, topN);
+        }
+
+        function generatePriceHistory(days = 30) {
+            const history = [];
+            const basePrice = randomFloat(100, 5000);
+
+            for (let i = 0; i < days; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - (days - 1 - i));
+                const fluctuation = randomFloat(-0.1, 0.1);
+                const price = parseFloat((basePrice * (1 + fluctuation)).toFixed(2));
+                history.push({
+                    date: date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }),
+                    price
+                });
+            }
+
+            return history;
+        }
+
+        function renderStats(products) {
+            const stats = document.getElementById('stats');
+            const minPrice = Math.min(...products.map(p => p.price));
+            const maxPrice = Math.max(...products.map(p => p.price));
+            const avgPrice = products.reduce((sum, p) => sum + p.price, 0) / products.length;
+
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${products.length}</div>
+                    <div class="stat-label">商品总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥${minPrice.toFixed(2)}</div>
+                    <div class="stat-label">最低价格</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥${maxPrice.toFixed(2)}</div>
+                    <div class="stat-label">最高价格</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥${avgPrice.toFixed(2)}</div>
+                    <div class="stat-label">平均价格</div>
+                </div>
+            `;
+        }
+
+        function renderRecommendations(products) {
+            const recs = getRecommendations(products);
+            const recGrid = document.getElementById('recGrid');
+
+            recGrid.innerHTML = recs.map((rec, i) => {
+                const p = rec.product;
+                const platformClass = `platform-${p.platform.toLowerCase()}`;
+                return `
+                    <div class="rec-card">
+                        <span class="rec-rank">第${i + 1}名</span>
+                        <div class="rec-score">性价比评分: ${rec.valueScore}</div>
+                        <h3>${p.name}</h3>
+                        <div class="rec-price">¥${p.price.toFixed(2)}</div>
+                        <div class="rec-info">销量: ${p.sales} | 店铺: ${p.shopName}</div>
+                        <div class="rec-info">评分: ${p.shopScore} | <span class="platform ${platformClass}">${p.platform}</span></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderChart(products) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            const platforms = [...new Set(products.map(p => p.platform))];
+            const colors = ['#667eea', '#f57c00', '#c2185b', '#28a745'];
+
+            const datasets = platforms.map((platform, i) => {
+                const history = generatePriceHistory(30);
+                return {
+                    label: platform,
+                    data: history.map(h => h.price),
+                    borderColor: colors[i % colors.length],
+                    backgroundColor: colors[i % colors.length] + '33',
+                    tension: 0.4
+                };
+            });
+
+            const labels = generatePriceHistory(30).map(h => h.date);
+
+            if (window.priceChartInstance) {
+                window.priceChartInstance.destroy();
+            }
+
+            window.priceChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '各平台价格趋势对比',
+                            font: { size: 18 }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ¥' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '¥' + value.toFixed(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderProductsTable(products) {
+            const tbody = document.getElementById('productsBody');
+            tbody.innerHTML = products.map((p, i) => {
+                const platformClass = `platform-${p.platform.toLowerCase()}`;
+                return `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${p.name}</td>
+                        <td class="price">¥${p.price.toFixed(2)}</td>
+                        <td>${p.sales}</td>
+                        <td>${p.shopName}</td>
+                        <td>${p.shopScore}</td>
+                        <td><span class="platform ${platformClass}">${p.platform}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function startSearch() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (!keyword) {
+                alert('请输入搜索关键词');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const resultSection = document.getElementById('resultSection');
+            const searchBtn = document.getElementById('searchBtn');
+
+            loading.style.display = 'block';
+            resultSection.classList.remove('active');
+            searchBtn.disabled = true;
+
+            // 模拟采集过程
+            setTimeout(() => {
+                const products = generateProducts(keyword);
+                products.sort((a, b) => a.price - b.price);
+
+                renderStats(products);
+                renderRecommendations(products);
+                renderChart(products);
+                renderProductsTable(products);
+
+                loading.style.display = 'none';
+                resultSection.classList.add('active');
+                searchBtn.disabled = false;
+
+                // 滚动到结果区域
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        }
+
+        function quickSearch(keyword) {
+            document.getElementById('searchInput').value = keyword;
+            startSearch();
+        }
+
+        // 支持回车键搜索
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startSearch();
+            }
+        });
+
+        // 页面加载时自动展示一个示例
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                quickSearch('无线蓝牙耳机');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

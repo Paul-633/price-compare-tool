@@ -1,0 +1,11 @@
+{
+  "jd": {
+    "cookie": "你的京东Cookie"
+  },
+  "taobao": {
+    "cookie": "你的淘宝Cookie"
+  },
+  "pdd": {
+    "cookie": "你的拼多多Cookie"
+  }
+}
