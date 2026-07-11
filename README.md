@@ -1,6 +1,39 @@
-# 电商商品价格采集与对比工具
+<div align="center">
 
-一个功能强大的电商商品价格采集、对比和分析工具，支持从京东、淘宝、拼多多等主流电商平台批量采集商品数据，并提供数据持久化、价格监控和定时任务等高级功能。
+# 🛒 电商商品价格采集与对比工具
+
+[![GitHub stars](https://img.shields.io/github/stars/Paul-633/price-compare-tool?style=social)](https://github.com/Paul-633/price-compare-tool/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Paul-633/price-compare-tool?style=social)](https://github.com/Paul-633/price-compare-tool/network)
+[![GitHub license](https://img.shields.io/github/license/Paul-633/price-compare-tool)](https://github.com/Paul-633/price-compare-tool/blob/main/LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Paul-633/price-compare-tool/pulls)
+
+**🚀 一键采集京东/淘宝/拼多多商品价格，智能分析性价比，自动监控降价！**
+
+[在线演示](https://paul-633.github.io/price-compare-tool/demo.html) • [使用文档](#-快速开始) • [问题反馈](https://github.com/Paul-633/price-compare-tool/issues)
+
+</div>
+
+---
+
+## 📖 项目简介
+
+这是一个功能完整的电商价格分析系统，帮助你轻松实现多平台商品数据采集、智能分析和价格监控。
+
+### 🎯 解决什么问题？
+
+- ❌ **手动比价费时费力？** → ✅ 自动采集多平台价格
+- ❌ **不知道哪个最划算？** → ✅ 智能性价比评分系统
+- ❌ **错过降价时机？** → ✅ 价格监控+降价提醒
+- ❌ **需要了解价格趋势？** → ✅ 可视化价格趋势图
+
+### 💡 技术亮点
+
+- 🕷️ **真实爬虫架构**：代理池、Cookie池、请求头轮换
+- 🛡️ **反爬机制**：自动检查 robots.txt，智能延时控制
+- 💾 **数据持久化**：支持 SQLite 和 MySQL
+- ⏰ **定时任务**：自动化价格监控
+- 📊 **可视化报告**：HTML 报告 + Chart.js 图表
 
 ## ✨ 功能特性
 
