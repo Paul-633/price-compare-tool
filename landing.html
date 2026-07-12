@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商价格采集对比工具 - 专业版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1a1a2e; background: #f8f9fa; }
+
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: white; padding: 80px 20px; text-align: center; }
+        .hero h1 { font-size: 2.8em; margin-bottom: 16px; }
+        .hero p { font-size: 1.2em; opacity: 0.9; max-width: 600px; margin: 0 auto 30px; }
+        .hero .badge { display: inline-block; background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 20px; font-size: 0.9em; margin-bottom: 20px; }
+        .cta-btn { display: inline-block; padding: 16px 48px; font-size: 1.1em; font-weight: 600; color: #0f0c29; background: #ffd700; border: none; border-radius: 12px; cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,215,0,0.4); }
+        .cta-secondary { display: inline-block; margin-left: 16px; padding: 16px 48px; font-size: 1.1em; color: white; border: 2px solid rgba(255,255,255,0.5); border-radius: 12px; text-decoration: none; transition: all 0.2s; }
+        .cta-secondary:hover { border-color: white; background: rgba(255,255,255,0.1); }
+
+        /* Sections */
+        .section { padding: 80px 20px; max-width: 1100px; margin: 0 auto; }
+        .section h2 { font-size: 2em; text-align: center; margin-bottom: 50px; }
+
+        /* Features */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: white; border-radius: 16px; padding: 36px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: transform 0.3s; }
+        .feature-card:hover { transform: translateY(-4px); }
+        .feature-icon { font-size: 2.5em; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 1.3em; margin-bottom: 12px; }
+        .feature-card p { color: #666; line-height: 1.7; }
+
+        /* Pricing */
+        .pricing-section { background: white; padding: 80px 20px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+        .pricing-card { border: 2px solid #e9ecef; border-radius: 16px; padding: 40px 30px; text-align: center; transition: all 0.3s; position: relative; }
+        .pricing-card:hover { border-color: #302b63; transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .pricing-card.featured { border-color: #ffd700; background: linear-gradient(180deg, #fffef5 0%, white 100%); }
+        .pricing-card.featured::before { content: "最热门"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #ffd700; color: #0f0c29; padding: 4px 20px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+        .pricing-card h3 { font-size: 1.4em; margin-bottom: 8px; }
+        .pricing-card .price { font-size: 2.5em; font-weight: 700; color: #302b63; margin: 20px 0; }
+        .pricing-card .price span { font-size: 0.4em; color: #999; font-weight: 400; }
+        .pricing-card ul { list-style: none; margin: 24px 0; text-align: left; }
+        .pricing-card ul li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; color: #555; }
+        .pricing-card ul li::before { content: "✓ "; color: #28a745; font-weight: 700; }
+        .pricing-btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 1em; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; transition: all 0.2s; }
+        .pricing-btn.primary { background: #302b63; color: white; }
+        .pricing-btn.primary:hover { background: #24243e; }
+        .pricing-btn.gold { background: #ffd700; color: #0f0c29; }
+        .pricing-btn.gold:hover { background: #e6c200; }
+
+        /* Demo */
+        .demo-section { background: linear-gradient(135deg, #0f0c29, #302b63); color: white; padding: 80px 20px; text-align: center; }
+        .demo-section h2 { color: white; }
+        .demo-section p { opacity: 0.8; max-width: 500px; margin: 0 auto 30px; }
+
+        /* FAQ */
+        .faq-item { background: white; border-radius: 12px; padding: 24px 30px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .faq-item h4 { font-size: 1.1em; margin-bottom: 10px; color: #302b63; }
+        .faq-item p { color: #666; line-height: 1.7; }
+
+        /* Footer */
+        .footer { background: #0f0c29; color: rgba(255,255,255,0.6); text-align: center; padding: 40px 20px; }
+        .footer a { color: #ffd700; text-decoration: none; }
+
+        /* Stats bar */
+        .stats-bar { display: flex; justify-content: center; gap: 60px; padding: 40px 20px; background: white; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-item .num { font-size: 2em; font-weight: 700; color: #302b63; }
+        .stat-item .label { color: #888; font-size: 0.9em; margin-top: 4px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8em; }
+            .cta-secondary { margin-left: 0; margin-top: 12px; }
+            .stats-bar { gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+    <div class="badge">Python 开源项目 · MIT + 商业双授权</div>
+    <h1>电商价格采集对比工具</h1>
+    <p>一键采集京东/淘宝/拼多多商品数据，智能分析性价比，自动监控降价。完整源码，开箱即用。</p>
+    <a href="#pricing" class="cta-btn">立即购买授权</a>
+    <a href="https://github.com/Paul-633/price-compare-tool" class="cta-secondary" target="_blank">免费试用（MIT）</a>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+    <div class="stat-item"><div class="num">3,488</div><div class="label">行代码</div></div>
+    <div class="stat-item"><div class="num">3</div><div class="label">平台支持</div></div>
+    <div class="stat-item"><div class="num">11</div><div class="label">功能模块</div></div>
+    <div class="stat-item"><div class="num">100%</div><div class="label">Python 实现</div></div>
+</div>
+
+<!-- Features -->
+<div class="section">
+    <h2>功能亮点</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">️</div>
+            <h3>真实爬虫架构</h3>
+            <p>代理池、Cookie池、请求头轮换，智能延时控制，自动检查 robots.txt，可应对主流反爬机制。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💾</div>
+            <h3>数据持久化</h3>
+            <p>支持 SQLite 和 MySQL 双数据库，自动记录价格历史，支持数据导出和分析。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>智能分析引擎</h3>
+            <p>基于价格、销量、店铺评分的综合性价比评分算法，自动推荐最优选择。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⏰</div>
+            <h3>定时价格监控</h3>
+            <p>设置目标价格，定时自动检查，降价即时通知。支持控制台和邮件提醒。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📈</div>
+            <h3>可视化报告</h3>
+            <p>自动生成 HTML 报告和 Chart.js 价格趋势图，数据一目了然。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>模块化设计</h3>
+            <p>采集层、处理层、展示层分离，代码结构清晰，易于扩展和二次开发。</p>
+        </div>
+    </div>
+</div>
+
+<!-- Pricing -->
+<div class="pricing-section" id="pricing">
+    <div style="text-align:center; margin-bottom: 50px;">
+        <h2 style="font-size:2em;">选择你的授权方案</h2>
+        <p style="color:#888; margin-top:12px;">MIT 免费版可用于学习和研究，商业用途请购买商业授权</p>
+    </div>
+    <div class="pricing-grid">
+        <div class="pricing-card">
+            <h3>免费版</h3>
+            <div class="price">¥0<span> / 永久</span></div>
+            <ul>
+                <li>完整源代码</li>
+                <li>MIT 许可证</li>
+                <li>社区支持</li>
+                <li>个人学习使用</li>
+                <li style="color:#ccc; text-decoration:line-through;">商业盈利</li>
+                <li style="color:#ccc; text-decoration:line-through;">技术支持</li>
+            </ul>
+            <a href="https://github.com/Paul-633/price-compare-tool" class="pricing-btn primary" target="_blank">免费下载</a>
+        </div>
+        <div class="pricing-card featured">
+            <h3>个人商业版</h3>
+            <div class="price">¥299<span> / 年</span></div>
+            <ul>
+                <li>完整源代码</li>
+                <li>商业使用授权</li>
+                <li>去除品牌标识</li>
+                <li>6个月免费更新</li>
+                <li>邮件技术支持</li>
+                <li>使用文档</li>
+            </ul>
+            <a href="mailto:paul633@example.com?subject=购买个人商业版授权" class="pricing-btn gold">立即购买</a>
+        </div>
+        <div class="pricing-card">
+            <h3>企业商业版</h3>
+            <div class="price">¥2,999<span> / 年</span></div>
+            <ul>
+                <li>所有个人版权益</li>
+                <li>不限使用人数</li>
+                <li>7x24 技术支持</li>
+                <li>终身免费更新</li>
+                <li>定制功能开发（2次）</li>
+                <li>私有部署指导</li>
+            </ul>
+            <a href="mailto:paul633@example.com?subject=购买企业商业版授权" class="pricing-btn primary">联系购买</a>
+        </div>
+        <div class="pricing-card">
+            <h3>永久授权</h3>
+            <div class="price">¥9,999<span> / 买断</span></div>
+            <ul>
+                <li>所有企业版权益</li>
+                <li>源代码完全所有权</li>
+                <li>可二次分发/转售</li>
+                <li>专属技术顾问</li>
+                <li>优先新功能开发</li>
+                <li>SLA 保障</li>
+            </ul>
+            <a href="mailto:paul633@example.com?subject=购买永久授权" class="pricing-btn primary">联系购买</a>
+        </div>
+    </div>
+</div>
+
+<!-- Demo CTA -->
+<div class="demo-section">
+    <h2>先试用，再决定</h2>
+    <p>MIT 许可证下可自由使用全部功能，满意后再购买商业授权</p>
+    <a href="https://github.com/Paul-633/price-compare-tool" class="cta-btn" target="_blank">GitHub 免费获取</a>
+</div>
+
+<!-- FAQ -->
+<div class="section">
+    <h2>常见问题</h2>
+    <div class="faq-item">
+        <h4>免费版和商业版功能有区别吗？</h4>
+        <p>功能完全相同。区别仅在于授权范围：免费版仅限个人学习和研究，商业版允许用于盈利目的，并包含技术支持。</p>
+    </div>
+    <div class="faq-item">
+        <h4>购买后如何获得源码？</h4>
+        <p>付款后 24 小时内，你会收到授权证书、完整源码压缩包和专属更新渠道的访问权限。</p>
+    </div>
+    <div class="faq-item">
+        <h4>支持哪些支付方式？</h4>
+        <p>支付宝、微信支付、银行转账。海外用户支持 PayPal 和信用卡。</p>
+    </div>
+    <div class="faq-item">
+        <h4>可以退款吗？</h4>
+        <p>购买后 7 天内可全额退款。超过 7 天按剩余时间比例退款。</p>
+    </div>
+    <div class="faq-item">
+        <h4>可以定制功能吗？</h4>
+        <p>企业版包含 2 次定制功能开发。也可以单独购买定制开发服务，按需求报价。</p>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <p>邮箱：<a href="mailto:paul633@example.com">paul633@example.com</a> | GitHub：<a href="https://github.com/Paul-633/price-compare-tool" target="_blank">Paul-633/price-compare-tool</a></p>
+    <p style="margin-top:12px; font-size:0.85em;">&copy; 2026 Paul-633. All rights reserved.</p>
+</div>
+
+</body>
+</html>

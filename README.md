@@ -10,7 +10,7 @@
 
 **🚀 一键采集京东/淘宝/拼多多商品价格，智能分析性价比，自动监控降价！**
 
-[在线演示](https://paul-633.github.io/price-compare-tool/demo.html) • [使用文档](#-快速开始) • [问题反馈](https://github.com/Paul-633/price-compare-tool/issues)
+[在线演示](https://paul-633.github.io/price-compare-tool/demo.html) • [商业授权](COMMERCIAL_LICENSE.md) • [使用文档](#-快速开始) • [问题反馈](https://github.com/Paul-633/price-compare-tool/issues)
 
 </div>
 
@@ -352,7 +352,19 @@ pip install -r requirements.txt
 
 ## 📄 许可证
 
-MIT License
+本项目采用 **双重授权模式**：
+
+- **MIT License**：免费用于个人学习、研究、非商业用途
+- **商业授权**：付费用于商业用途，包含技术支持和更新
+
+详见 [商业授权说明](COMMERCIAL_LICENSE.md)
+
+## 💼 商业合作
+
+如需商业授权、定制开发或技术咨询，请联系：
+
+- 邮箱：paul633@example.com
+- GitHub：https://github.com/Paul-633
 
 ## 📧 联系方式
 
