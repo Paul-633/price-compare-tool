@@ -463,15 +463,15 @@
 
     <script>
         // 模拟商品数据生成器
-        const TEMPLATES = [
-            { name: "{} 无线蓝牙耳机 降噪入耳式", priceRange: [99, 599], category: "数码" },
-            { name: "{} 智能手机 5G全网通", priceRange: [999, 5999], category: "手机" },
-            { name: "{} 笔记本电脑 轻薄本", priceRange: [2999, 8999], category: "电脑" },
-            { name: "{} 机械键盘 游戏电竞", priceRange: [199, 799], category: "外设" },
-            { name: "{} 显示器 27寸4K", priceRange: [899, 2999], category: "显示器" },
-            { name: "{} 运动鞋 男女同款", priceRange: [199, 899], category: "运动" },
-            { name: "{} 保温杯 316不锈钢", priceRange: [59, 199], category: "家居" },
-            { name: "{} 充电宝 20000mAh", priceRange: [79, 299], category: "配件" },
+        const SUFFIXES = [
+            "旗舰版", "标准版", "升级版", "经典款", "豪华款",
+            "基础款", "高配版", "尊享版", "青春版", "专业版",
+            "加强版", "限量版", "定制版", "畅销款", "新款"
+        ];
+
+        const DESCRIPTORS = [
+            "热销爆款", "品牌直供", "限时特惠", "销量冠军", "口碑推荐",
+            "品质保证", "正品保障", "工厂直销", "全网热销", "明星同款"
         ];
 
         const SHOP_NAMES = [
@@ -494,9 +494,10 @@
             const numProducts = randomInt(20, 35);
 
             for (let i = 0; i < numProducts; i++) {
-                const template = TEMPLATES[randomInt(0, TEMPLATES.length - 1)];
-                const name = template.name.replace("{}", keyword);
-                const price = parseFloat(randomFloat(template.priceRange[0], template.priceRange[1]).toFixed(2));
+                const suffix = SUFFIXES[randomInt(0, SUFFIXES.length - 1)];
+                const descriptor = DESCRIPTORS[randomInt(0, DESCRIPTORS.length - 1)];
+                const name = `${keyword} ${suffix} 【${descriptor}】`;
+                const price = parseFloat(randomFloat(50, 5000).toFixed(2));
                 const sales = randomInt(100, 50000);
                 const shopName = SHOP_NAMES[randomInt(0, SHOP_NAMES.length - 1)];
                 const shopScore = parseFloat(randomFloat(4.0, 5.0).toFixed(1));
@@ -511,7 +512,7 @@
                     shopScore,
                     platform,
                     url,
-                    category: template.category
+                    category: "综合"
                 });
             }
 
