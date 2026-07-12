@@ -463,17 +463,6 @@
 
     <script>
         // 模拟商品数据生成器
-        const SUFFIXES = [
-            "旗舰版", "标准版", "升级版", "经典款", "豪华款",
-            "基础款", "高配版", "尊享版", "青春版", "专业版",
-            "加强版", "限量版", "定制版", "畅销款", "新款"
-        ];
-
-        const DESCRIPTORS = [
-            "热销爆款", "品牌直供", "限时特惠", "销量冠军", "口碑推荐",
-            "品质保证", "正品保障", "工厂直销", "全网热销", "明星同款"
-        ];
-
         const SHOP_NAMES = [
             "官方旗舰店", "品牌专卖店", "数码旗舰店", "官方直营店",
             "品质优选店", "正品保证店", "工厂直销店", "品牌授权店"
@@ -492,13 +481,15 @@
         function generateProducts(keyword) {
             const products = [];
             const numProducts = randomInt(20, 35);
+            // 根据关键词生成合理的基础价格范围
+            const basePrice = randomFloat(100, 2000);
 
             for (let i = 0; i < numProducts; i++) {
-                const suffix = SUFFIXES[randomInt(0, SUFFIXES.length - 1)];
-                const descriptor = DESCRIPTORS[randomInt(0, DESCRIPTORS.length - 1)];
-                const name = `${keyword} ${suffix} 【${descriptor}】`;
-                const price = parseFloat(randomFloat(50, 5000).toFixed(2));
-                const sales = randomInt(100, 50000);
+                // 商品名称直接使用关键词，不加多余拼接
+                const name = keyword;
+                // 价格围绕基础价格波动，模拟不同店铺的定价差异
+                const price = parseFloat((basePrice * randomFloat(0.7, 1.5)).toFixed(2));
+                const sales = randomInt(500, 50000);
                 const shopName = SHOP_NAMES[randomInt(0, SHOP_NAMES.length - 1)];
                 const shopScore = parseFloat(randomFloat(4.0, 5.0).toFixed(1));
                 const platform = PLATFORMS[randomInt(0, PLATFORMS.length - 1)];
